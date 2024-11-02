@@ -9,8 +9,8 @@ SQL is a fundamental skill in data analysis, back-end development, and many othe
 
 #### Lets Start......................
 
-### Platform: Leetcode, Difficulty:Medium
-#### Q1:If the customer's preferred delivery date is the same as the order date, then the order is called immediate; otherwise, it is called scheduled.The first order of a customer is the order with the earliest order date that the customer made. It is guaranteed that a customer has precisely one first order.Write a solution to find the percentage of immediate orders in the first orders of all customers, rounded to 2 decimal places.
+#### Platform: Leetcode, Difficulty:Medium
+ Question : If the customer's preferred delivery date is the same as the order date, then the order is called immediate; otherwise, it is called scheduled.The first order of a customer is the order with the earliest order date that the customer made. It is guaranteed that a customer has precisely one first order.Write a solution to find the percentage of immediate orders in the first orders of all customers, rounded to 2 decimal places.
 
 ```sql
 WITH cte AS (
@@ -35,8 +35,8 @@ JOIN
     Delivery d ON ct.customer_id = d.customer_id AND ct.first_order_date = d.order_date;
 ```
 
-### Platform: Leetcode, Difficulty: Eassy
-#### Q1:Write a solution that will, for each user, return the number of followers.Return the result table ordered by user_id in ascending order.
+#### Platform: Leetcode, Difficulty: Eassy
+Question : Write a solution that will, for each user, return the number of followers.Return the result table ordered by user_id in ascending order.
 ```sql
 select
    user_id,
@@ -46,13 +46,33 @@ group by user_id
 order by user_id asc;
 ```
 
-### Platform: Leetcode, Difficulty: Eassy
-#### Q1:Write a solution to find all the classes that have at least five students.Return the result table ordered by user_id in ascending order.
+#### Platform: Leetcode, Difficulty: Eassy
+Question : Write a solution to find all the classes that have at least five students.Return the result table ordered by user_id in ascending order.
 ```sql
 select
    class
 from Courses
 group by class
 having count(student)>=5
+```
+
+#### Platform: Leetcode, Difficulty: Hard
+Question : Write a solution to find the employees who are high earners in each of the departments.Return the result table in any order.
+```sql
+with cte as (
+    select
+   d.name as  Department,
+   e.name as Employee,
+   e.salary as Salary,
+   dense_rank() over(partition by d.name order by e.salary desc) as rnk
+from Department d
+inner join Employee e
+on d.id=e.departmentId )
+select
+   Department,
+   Employee,
+   Salary
+from cte
+where rnk <=3;
 ```
 
