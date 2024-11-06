@@ -75,4 +75,72 @@ select
 from cte
 where rnk <=3;
 ```
+#### Platform: Other Website, Difficulty: Eassy
+Question:  List All Distinct Users and Their Stats
+```sql
+SELECT
+   DISTINCT user_id,
+   COUNT(DISTINCT id) as total_submission,
+   SUM(points) as total_point
+ FROM `practice-sql-439110.SQL_Practice.user_data` 
+ GROUP BY user_id
+ ORDER BY total_submission DESC;
+```
 
+#### Platform: Other Website, Difficulty: Medium
+Question:  Find the Top 3 Users with the Most Correct Submissions for Each Day
+```sql
+WITH CTE AS (
+  SELECT
+   FORMAT_DATE('%m-%d',submitted_at) AS day,
+   username,
+   COUNT(CASE WHEN points>0 THEN 1 ELSE 0 END) as correct_submission
+FROM `practice-sql-439110.SQL_Practice.user_data` 
+GROUP BY day,username),
+user_rank AS (
+  SELECT
+     day,
+     username,
+    correct_submission,
+    DENSE_RANK() OVER(PARTITION BY day ORDER BY correct_submission DESC) as rnk
+  FROM CTE
+)
+
+SELECT
+    day,
+    username,
+    correct_submission,
+    rnk
+FROM user_rank
+WHERE rnk <=3
+ORDER BY day, rnk;
+```
+#### Platform: Other Website, Difficulty: Eassy
+Question:  Find the Top 10 Performers for Each Week
+```sql
+ WITH CTE AS 
+ (SELECT
+    EXTRACT(week from submitted_at) AS week_no,
+    username,
+    SUM(points) as total_points
+FROM `practice-sql-439110.SQL_Practice.user_data` 
+GROUP BY week_no,username),
+
+user_rank AS (
+  SELECT
+    week_no,
+    username,
+    total_points,
+    DENSE_RANK() OVER(PARTITION BY week_no ORDER BY total_points DESC) as rnk
+  FROM CTE
+)
+
+SELECT
+   week_no,
+   username,
+   total_points,
+   rnk
+FROM user_rank
+WHERE rnk<=10
+ORDER BY week_no, total_points ;
+```
